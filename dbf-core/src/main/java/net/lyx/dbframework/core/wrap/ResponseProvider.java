@@ -43,7 +43,7 @@ public class ResponseProvider {
 
             for (int index = 1; index <= columnCount; index++) {
                 FieldID fieldID = FieldID.builder()
-                        .index(index)
+                        .index(index - 1)
                         .label(metaData.getColumnLabel(index))
                         .build();
 

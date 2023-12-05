@@ -9,18 +9,18 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ImmutableMultiConsumer<K, T> {
+public class ImmutableMultiConsumer<K, H> {
 
-    public static class Builder<K, T> {
+    public static class Builder<K, H> {
 
-        private final Map<K, Consumer<T>> handle = new HashMap<>();
+        private final Map<K, Consumer<H>> handle = new HashMap<>();
 
-        public Builder<K, T> register(K key, Consumer<T> consumer) {
+        public Builder<K, H> register(K key, Consumer<H> consumer) {
             handle.put(key, consumer);
             return this;
         }
 
-        public ImmutableMultiConsumer<K, T> build() {
+        public ImmutableMultiConsumer<K, H> build() {
             return new ImmutableMultiConsumer<>(handle);
         }
     }
@@ -29,14 +29,14 @@ public class ImmutableMultiConsumer<K, T> {
         return new Builder<>();
     }
 
-    private final Map<K, Consumer<T>> map;
+    private final Map<K, Consumer<H>> map;
 
-    public boolean execute(@NotNull K key, T helper) {
+    public boolean execute(@NotNull K key, H helper) {
         if (!map.containsKey(key)) {
             return false;
         }
 
-        Consumer<T> actionConsumer = map.get(key);
+        Consumer<H> actionConsumer = map.get(key);
         boolean result = actionConsumer != null;
 
         if (result) {
