@@ -1,0 +1,8 @@
+CREATE
+@[+entity]->"$value"
+IF NOT EXISTS
+@[+name]->"$value"
+@[+has_signature]->"("
+@[+parameters]->"$label $type@[$length]->"($length)" @[$addonsLabel]->"$addonsLabel"@[$defaultValue]->" DEFAULT $defaultValue"@[$encoding]->" CHARACTER SET $encoding"@[$encodingCollate]->" COLLATE $encodingCollate""[+],_
+@[+has_signature]->")"
+@[+encoding]->"DEFAULT CHARACTER SET $characterStyle@[$collate]->" COLLATE $collate""

@@ -1,0 +1,9 @@
+INSERT INTO
+@[+container]->"$value"
+(
+@[+values]->"$label"[+],_
+) VALUES (
+@[+values]->"$value"[+],_
+)
+@[+has_reduce_duplication]->"ON DUPLICATE KEY UPDATE"
+@[+values_duplication]->"$label = $value"[+],_

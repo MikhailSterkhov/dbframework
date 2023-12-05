@@ -1,0 +1,9 @@
+SELECT
+@[+subjects]->"@[$function]->"$function($label)":"$label"@[$association]->" AS $association"":"*"[+],_
+FROM
+@[+container]->"$value":"[N/A]"
+@[+merges]->"$lr_direction $io_direction JOIN $table@[$sourceLabel]->" ON $sourceLabel = $table.$targetLabel""
+@[+predicates]->"$binderNext $label $matcher $value"[+]_
+@[+groups]->"GROUP BY $value"
+@[+orders]->"ORDER BY $label@[$direction]->" $direction""
+@[+limit]->"LIMIT $value"
