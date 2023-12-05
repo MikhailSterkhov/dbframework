@@ -1,11 +1,10 @@
 package net.lyx.dbframework.test.dao;
 
 import net.lyx.dbframework.core.DatabaseConnection;
-import net.lyx.dbframework.provider.DatabaseProvider;
-import net.lyx.dbframework.core.observer.event.DbRequestPreprocessEvent;
+import net.lyx.dbframework.core.observer.event.DbRequestCompletedEvent;
 import net.lyx.dbframework.core.security.BasicCredentials;
-import net.lyx.dbframework.dao.Dao;
 import net.lyx.dbframework.dao.repository.Repository;
+import net.lyx.dbframework.provider.DatabaseProvider;
 
 public class EmployeeAccessTest {
 
@@ -19,21 +18,28 @@ public class EmployeeAccessTest {
                         .build());
 
         connection.addObserver(event -> {
-            if (event instanceof DbRequestPreprocessEvent) {
-                System.out.println(((DbRequestPreprocessEvent) event).getSql());
+            if (event instanceof DbRequestCompletedEvent) {
+                System.out.println(((DbRequestCompletedEvent) event).getSql());
             }
         });
 
-        Dao<Employee> employeeDao = provider.registerDao(new EmployeeDao(provider.getComposer(), connection));
-        Repository<Employee> repository = employeeDao.repository();
+        Repository<Employee> repository = provider.registerDao(
+                new EmployeeDao(provider.getComposer(), connection));
 
-        repository.insert(
+        repository.insertMono(
                 Employee.builder()
                         .firstName("Oleg")
                         .lastName("Tinkoff")
                         .age(55)
                         .build());
+        repository.insertMono(
+                Employee.builder()
+                        .firstName("Viktor")
+                        .lastName("Busov")
+                        .age(35)
+                        .build());
 
-        repository.findAll().forEach(System.out::println);
+        repository.findAll()
+                .forEach(System.out::println);
     }
 }

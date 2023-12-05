@@ -17,17 +17,17 @@ public class DaoRepository<T> implements Repository<T> {
     private final DaoRepositoryLifecycle<T> lifecycle;
 
     @Override
-    public void delete(T object) {
+    public void deleteMono(T object) {
         DaoRequestMaker.makeDelete(this, object);
     }
 
     @Override
-    public void insert(T object) {
+    public void insertMono(T object) {
         DaoRequestMaker.makeInsert(this, object);
     }
 
     @Override
-    public void update(T object) {
+    public void updateMono(T object) {
     }
 
     @Override

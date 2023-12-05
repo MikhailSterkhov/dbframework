@@ -1,9 +1,9 @@
-package net.lyx.dbframework.test;
+package net.lyx.dbframework.test.core;
 
 import net.lyx.dbframework.core.DatabaseConnection;
 import net.lyx.dbframework.provider.DatabaseProvider;
 import net.lyx.dbframework.core.security.BasicCredentials;
-import net.lyx.dbframework.test.observer.AnyEventPrintingObserverTest;
+import net.lyx.dbframework.test.core.AnyEventPrintingObserverTest;
 
 public class PlayersContainerNativeManipulationsTest {
 

@@ -5,6 +5,7 @@ import lombok.var;
 import net.lyx.dbframework.core.Field;
 import net.lyx.dbframework.core.ResponseStream;
 import net.lyx.dbframework.core.compose.ParameterType;
+import net.lyx.dbframework.dao.Dao;
 import net.lyx.dbframework.dao.DataAccessContext;
 import net.lyx.dbframework.dao.DataAccessException;
 import net.lyx.dbframework.dao.repository.DaoRepository;
@@ -43,7 +44,6 @@ public class DaoPreparationMaker {
 
         var dao = lifecycle.getDao();
 
-        dao.prepare(context);
         dao.writeAccess(context);
 
         DaoPreparationMaker.makeContainer(lifecycle);

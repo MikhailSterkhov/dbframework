@@ -30,11 +30,14 @@ public abstract class AbstractPreparedDao<T> implements Dao<T> {
     @Setter(AccessLevel.PROTECTED)
     private Repository<T> repository;
 
+    @Getter
     @ToString.Include
     private final String name;
 
     private final Composer composer;
     private final DatabaseConnection activeConnection;
+
+    private DataAccessContext<T> context;
 
     public abstract List<LabelOrder> references();
 
@@ -49,26 +52,29 @@ public abstract class AbstractPreparedDao<T> implements Dao<T> {
     }
 
     private void prepareContainerName(DataAccessContext<T> context) {
-        context.setContainerName(name);
-
         var references = this.references();
         var comparator = Comparator.<String>comparingInt(name -> getOrder(references, name));
 
         context.setLabelAccessorsCache(new TreeMap<>(comparator));
+
+        context.setContainerName(getName());
     }
 
     @Override
     public final void prepare(DataAccessContext<T> context) {
-        var preparedRepository = createRepository(context);
+        this.context = context;
 
         prepareContainerName(context);
-        setRepository(preparedRepository);
+        setRepository(repository);
 
         onPreparedPost(context);
     }
 
     @Override
     public final Repository<T> repository() {
+        if (repository == null) {
+            repository = createRepository(context);
+        }
         return repository;
     }
 

@@ -6,11 +6,11 @@ import java.util.function.Predicate;
 
 public interface Repository<T> {
 
-    void delete(T object);
+    void deleteMono(T object);
 
-    void insert(T object);
+    void insertMono(T object);
 
-    void update(T object);
+    void updateMono(T object);
 
     T findFirst();
 

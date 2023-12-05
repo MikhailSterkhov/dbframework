@@ -1,34 +1,33 @@
 package net.lyx.dbframework.dao;
 
 import lombok.var;
+import net.lyx.dbframework.dao.repository.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public final class DaoRegistryManager {
 
-    private final Map<Class<?>, Dao<?>> registries = new HashMap<>();
+    private final Map<Class<?>, Repository<?>> registries = new HashMap<>();
 
     private <T> void prepareRegistration(Dao<T> dao) {
-        var accessContext = new DataAccessContext<T>();
-
-        dao.prepare(accessContext);
-        dao.writeAccess(accessContext);
+        dao.prepare(new DataAccessContext<>());
     }
 
-    public void register(Dao<?> dao) {
+    public <T> Repository<T> register(Dao<T> dao) {
         var daoClass = dao.getClass();
         if (registries.containsKey(daoClass)) {
             throw new DataAccessException("dao already registered");
         }
 
         prepareRegistration(dao);
+        registries.put(daoClass, dao.repository());
 
-        registries.put(daoClass, dao);
+        return dao.repository();
     }
 
     @SuppressWarnings("unchecked")
-    public <T> Dao<T> get(Class<? extends Dao<T>> daoClass) {
-        return (Dao<T>) registries.get(daoClass);
+    public <T> Repository<T> get(Class<? super Dao<T>> daoClass) {
+        return (Repository<T>) registries.get(daoClass);
     }
 }

@@ -1,4 +1,4 @@
-package net.lyx.dbframework.test.observer;
+package net.lyx.dbframework.test.core;
 
 import net.lyx.dbframework.core.observer.DatabaseObserver;
 import net.lyx.dbframework.core.observer.Observable;

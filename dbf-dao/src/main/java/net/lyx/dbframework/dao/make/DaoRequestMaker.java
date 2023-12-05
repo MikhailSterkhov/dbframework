@@ -2,10 +2,7 @@ package net.lyx.dbframework.dao.make;
 
 import lombok.experimental.UtilityClass;
 import lombok.var;
-import net.lyx.dbframework.core.compose.CombinedStructs;
-import net.lyx.dbframework.core.compose.ParameterStyle;
-import net.lyx.dbframework.core.compose.ParameterType;
-import net.lyx.dbframework.core.compose.StorageType;
+import net.lyx.dbframework.core.compose.*;
 import net.lyx.dbframework.core.compose.template.collection.PredicatesTemplate;
 import net.lyx.dbframework.dao.repository.DaoRepository;
 import net.lyx.dbframework.dao.repository.DaoRepositoryLifecycle;
@@ -117,13 +114,22 @@ public class DaoRequestMaker {
 
         var signature = composer.signature();
 
+        var autofilled = Arrays.asList(accessContext.autofilled());
+
         for (var label : accessContext.labels()) {
             var read = accessContext.read(defaultObject, label);
 
-            signature.with(CombinedStructs.styledParameter(label,
-                    ParameterStyle.builder()
-                            .type(ParameterType.fromJavaType(read.getClass()))
-                            .build()));
+            var style = ParameterStyle.builder()
+                    .type(ParameterType.fromJavaType(read.getClass()));
+
+            if (autofilled.contains(label)) {
+                style.addons(Arrays.asList(
+                        ParameterAddon.INCREMENTING,
+                        ParameterAddon.PRIMARY));
+            }
+            // todo - and other boolean conditions...
+
+            signature.with(CombinedStructs.styledParameter(label, style.build()));
         }
 
         template.signature(signature.combine())

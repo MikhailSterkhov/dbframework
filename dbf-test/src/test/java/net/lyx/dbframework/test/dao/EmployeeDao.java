@@ -16,13 +16,6 @@ public class EmployeeDao extends AbstractPreparedDao<Employee> {
             LabelOrder.create(3, "last_name"),
             LabelOrder.create(4, "age"));
 
-    private static final Employee DEFAULT_UNVALIDATED_EMPLOYEE = Employee.builder()
-            .firstName("")
-            .lastName("")
-            .age(0)
-            .id(-1)
-            .build();
-
     public EmployeeDao(Composer composer, DatabaseConnection connection) {
         super("employees", composer, connection);
     }
@@ -42,6 +35,11 @@ public class EmployeeDao extends AbstractPreparedDao<Employee> {
 
     @Override
     protected Employee allocateDefaultObject() {
-        return DEFAULT_UNVALIDATED_EMPLOYEE;
+        return Employee.builder()
+                .firstName("")
+                .lastName("")
+                .age(0)
+                .id(-1)
+                .build();
     }
 }

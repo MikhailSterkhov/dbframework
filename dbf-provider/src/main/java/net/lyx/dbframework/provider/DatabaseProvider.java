@@ -15,6 +15,7 @@ import net.lyx.dbframework.core.wrap.JdbcWrapper;
 import net.lyx.dbframework.core.security.Credentials;
 import net.lyx.dbframework.dao.Dao;
 import net.lyx.dbframework.dao.DaoRegistryManager;
+import net.lyx.dbframework.dao.repository.Repository;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
@@ -72,12 +73,11 @@ public final class DatabaseProvider {
         return Collections.unmodifiableCollection(activeConnections);
     }
 
-    public synchronized <T> Dao<T> registerDao(@NotNull Dao<T> dao) {
-        daoRegistryManager.register(dao);
-        return dao;
+    public synchronized <T> Repository<T> registerDao(@NotNull Dao<T> dao) {
+        return daoRegistryManager.register(dao);
     }
 
-    public synchronized <T> Dao<T> getDao(@NotNull Class<? extends Dao<T>> daoClass) {
+    public synchronized <T> Repository<T> getRepository(@NotNull Class<? super Dao<T>> daoClass) {
         return daoRegistryManager.get(daoClass);
     }
 }
