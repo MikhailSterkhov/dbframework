@@ -2,6 +2,7 @@ package net.lyx.dbframework.dao.entity;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -23,7 +24,7 @@ public class Entity implements Cloneable {
     private final Class<?> type;
 
     @ToString.Include
-    private final Set<Element> elements;
+    private final List<Element> elements;
 
     private Element key;
 

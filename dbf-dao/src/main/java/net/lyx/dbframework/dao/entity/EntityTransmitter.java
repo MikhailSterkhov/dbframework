@@ -142,7 +142,7 @@ public class EntityTransmitter {
 
         @SneakyThrows
         public void fillEntity() {
-            Set<Element> elementsTree = new TreeSet<>(ELEMENT_COMPARATOR);
+            List<Element> elementList = new ArrayList<>();
 
             Class<?> inputClass = input.getClass();
             Entity entity = EntityTransmitter.transmitEntityWithoutValues(inputClass);
@@ -152,15 +152,17 @@ public class EntityTransmitter {
 
                 Field field = inputClass.getDeclaredField(fieldName);
 
-                elementsTree.add(element.toBuilder()
+                elementList.add(element.toBuilder()
                         .value(getElementValue(fieldName, field))
                         .build());
             }
 
+            elementList.sort(ELEMENT_COMPARATOR);
+
             output = Entity.builder()
                     .name(entity.getName())
                     .type(entity.getType())
-                    .elements(elementsTree)
+                    .elements(elementList)
                     .build();
         }
 
@@ -223,9 +225,9 @@ public class EntityTransmitter {
             boolean hasAutoPrepareFlag = input.isAnnotationPresent(EntityAutoPrepare.class);
 
             String entityName = input.getDeclaredAnnotation(EntityAccessible.class).name();
-            Set<Element> elementSet = new TreeSet<>(ELEMENT_COMPARATOR);
+            List<Element> elementList = new ArrayList<>();
 
-            int customOrder = elementSet.size() + 1;
+            int customOrder = 0;
             for (Field field : input.getDeclaredFields()) {
                 Element element = toElement(field);
 
@@ -237,13 +239,15 @@ public class EntityTransmitter {
                     if (element.getOrder() < 0)
                         element = element.toBuilder().order(customOrder++).build();
 
-                    elementSet.add(element);
+                    elementList.add(element);
                 }
             }
 
+            elementList.sort(ELEMENT_COMPARATOR);
+
             entityBuilder.type(input)
                     .name(entityName)
-                    .elements(elementSet);
+                    .elements(elementList);
         }
 
         private Element toElementAuto(Field field) {
@@ -379,7 +383,7 @@ public class EntityTransmitter {
 
         private Entity createEntity(ResponseRow row) {
             Entity clone = templateEntity.clone();
-            Set<Element> elementSet = new TreeSet<>(ELEMENT_COMPARATOR);
+            List<Element> elementList = new ArrayList<>();
 
             for (Element element : clone.getElements()) {
                 Object valueObject = row.field(element.getShortName()).getAsObject();
@@ -389,12 +393,13 @@ public class EntityTransmitter {
                     valueObject = findExternalEntity(valueObject, element);
                 }
 
-                elementSet.add(element.toBuilder()
+                elementList.add(element.toBuilder()
                         .value(valueObject)
                         .build());
             }
 
-            return clone.toBuilder().elements(elementSet).build();
+            elementList.sort(ELEMENT_COMPARATOR);
+            return clone.toBuilder().elements(elementList).build();
         }
 
         private Entity findExternalEntity(Object dbValue, Element element) {
