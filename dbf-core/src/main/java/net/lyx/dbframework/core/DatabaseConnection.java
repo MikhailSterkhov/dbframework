@@ -8,6 +8,8 @@ import net.lyx.dbframework.core.wrap.JdbcWrapper;
 import net.lyx.dbframework.core.wrap.ResultWrapper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Builder
@@ -46,5 +48,39 @@ public class DatabaseConnection {
     public DatabaseConnection addObserver(@NotNull DatabaseObserver observer) {
         jdbcWrapper.addObserver(observer);
         return this;
+    }
+
+    public void openTransaction(TransactionIsolation isolation) {
+        if (!jdbcWrapper.isConnected()) {
+            jdbcWrapper.reconnect();
+        }
+
+        jdbcWrapper.setTransactionState(TransactionState.ACTIVE);
+        jdbcWrapper.setTransactionIsolation(isolation);
+    }
+
+    public void openTransaction() {
+        openTransaction(TransactionIsolation.SERIALIZABLE);
+    }
+
+    public void closeTransaction() {
+        if (jdbcWrapper.isConnected()) {
+            jdbcWrapper.setTransactionState(TransactionState.INACTIVE);
+        }
+    }
+
+    public synchronized <T> T ofTransactionalGet(TransactionIsolation isolation, Supplier<T> transactionSupplier) {
+        openTransaction(isolation);
+        T value = transactionSupplier.get();
+        closeTransaction();
+        return value;
+    }
+
+    public synchronized <T> T ofTransactionalGet(Supplier<T> transactionSupplier) {
+        return ofTransactionalGet(TransactionIsolation.SERIALIZABLE, transactionSupplier);
+    }
+
+    public synchronized void close() {
+        jdbcWrapper.close();
     }
 }

@@ -21,4 +21,6 @@ public interface Field {
     Long getAsLong();
 
     Boolean getAsBoolean();
+
+    Object getAsObject();
 }

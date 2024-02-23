@@ -5,7 +5,7 @@ import net.lyx.dbframework.provider.DatabaseProvider;
 import net.lyx.dbframework.core.compose.*;
 import net.lyx.dbframework.core.security.BasicCredentials;
 import net.lyx.dbframework.core.transaction.FailedTransactionPreprocessConsumer;
-import net.lyx.dbframework.core.transaction.TransactionIsolation;
+import net.lyx.dbframework.core.TransactionIsolation;
 import net.lyx.dbframework.core.transaction.TransactionResult;
 
 import java.util.Arrays;

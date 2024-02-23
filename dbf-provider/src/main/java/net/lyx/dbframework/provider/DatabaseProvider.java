@@ -5,6 +5,7 @@ import net.lyx.dbframework.core.ConnectionID;
 import net.lyx.dbframework.core.DatabaseConnection;
 import net.lyx.dbframework.core.compose.Composer;
 import net.lyx.dbframework.core.compose.impl.PatternComposerImpl;
+import net.lyx.dbframework.core.security.Credentials;
 import net.lyx.dbframework.core.transaction.PreparedTransaction;
 import net.lyx.dbframework.core.transaction.Transaction;
 import net.lyx.dbframework.core.transaction.TransactionFactory;
@@ -12,10 +13,8 @@ import net.lyx.dbframework.core.transaction.TransactionQuery;
 import net.lyx.dbframework.core.transaction.impl.DatabaseTransactionQuery;
 import net.lyx.dbframework.core.transaction.repository.TransactionRepository;
 import net.lyx.dbframework.core.wrap.JdbcWrapper;
-import net.lyx.dbframework.core.security.Credentials;
-import net.lyx.dbframework.dao.Dao;
-import net.lyx.dbframework.dao.DaoRegistryManager;
-import net.lyx.dbframework.dao.repository.Repository;
+import net.lyx.dbframework.dao.EntityDao;
+import net.lyx.dbframework.dao.TypedEntityDao;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
@@ -33,7 +32,6 @@ public final class DatabaseProvider {
     private final Composer composer = new PatternComposerImpl();
 
     private final TransactionFactory transactionFactory = new TransactionFactory();
-    private final DaoRegistryManager daoRegistryManager = new DaoRegistryManager();
 
     private DatabaseConnection createDatabaseConnection(Credentials credentials) {
         ConnectionID connectionID = ConnectionID.builder()
@@ -57,6 +55,11 @@ public final class DatabaseProvider {
         return databaseConnection;
     }
 
+    public synchronized void closeConnection(@NotNull DatabaseConnection connection) {
+        activeConnections.remove(connection);
+        connection.close();
+    }
+
     public PreparedTransaction prepareTransaction(TransactionRepository repository) {
         return transactionFactory.createPreparedTransaction(repository);
     }
@@ -73,11 +76,7 @@ public final class DatabaseProvider {
         return Collections.unmodifiableCollection(activeConnections);
     }
 
-    public synchronized <T> Repository<T> registerDao(@NotNull Dao<T> dao) {
-        return daoRegistryManager.register(dao);
-    }
-
-    public synchronized <T> Repository<T> getRepository(@NotNull Class<? super Dao<T>> daoClass) {
-        return daoRegistryManager.get(daoClass);
+    public <E> EntityDao<E> createDao(@NotNull Class<E> entity, @NotNull DatabaseConnection connection) {
+        return new TypedEntityDao<>(composer, connection, entity);
     }
 }

@@ -4,7 +4,7 @@ import lombok.*;
 import net.lyx.dbframework.core.Field;
 import net.lyx.dbframework.core.ResponseRow;
 import net.lyx.dbframework.core.ResponseStream;
-import net.lyx.dbframework.core.util.result.Result;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -48,13 +48,16 @@ public class ResponseProvider {
                         .build();
 
                 String valueAsString;
+                Object valueAsObject;
                 try {
                     valueAsString = resultSet.getString(index);
+                    valueAsObject = resultSet.getObject(index);
                 } catch (SQLException exception) {
                     valueAsString = null;
+                    valueAsObject = null;
                 }
 
-                fieldByIdMap.put(fieldID, new FieldImpl(fieldID, valueAsString));
+                fieldByIdMap.put(fieldID, new FieldImpl(fieldID, valueAsString, valueAsObject));
             }
 
             responseRows.add(new RowImpl(fieldByIdMap));
@@ -80,9 +83,10 @@ public class ResponseProvider {
     private static class FieldImpl implements Field {
 
         private final FieldID id;
+        private final String valueAsString;
 
         @ToString.Include
-        private final String value;
+        private final Object valueAsObject;
 
         @Override
         public int index() {
@@ -96,37 +100,42 @@ public class ResponseProvider {
 
         @Override
         public String getAsString() {
-            return value;
+            return valueAsString;
         }
 
         @Override
         public Timestamp getAsTimestamp() {
-            return Timestamp.valueOf(value);
+            return Timestamp.valueOf(valueAsString);
         }
 
         @Override
         public Integer getAsInt() {
-            return value == null ? 0 : Integer.parseInt(getAsString());
+            return valueAsString == null ? 0 : Integer.parseInt(getAsString());
         }
 
         @Override
         public Double getAsDouble() {
-            return value == null ? 0 : Double.parseDouble(getAsString());
+            return valueAsString == null ? 0 : Double.parseDouble(getAsString());
         }
 
         @Override
         public Float getAsFloat() {
-            return value == null ? 0 : Float.parseFloat(getAsString());
+            return valueAsString == null ? 0 : Float.parseFloat(getAsString());
         }
 
         @Override
         public Long getAsLong() {
-            return value == null ? 0 : Long.parseLong(getAsString());
+            return valueAsString == null ? 0 : Long.parseLong(getAsString());
         }
 
         @Override
         public Boolean getAsBoolean() {
-            return value != null && Boolean.parseBoolean(getAsString());
+            return valueAsString != null && Boolean.parseBoolean(getAsString());
+        }
+
+        @Override
+        public Object getAsObject() {
+            return valueAsObject;
         }
     }
 
@@ -198,18 +207,18 @@ public class ResponseProvider {
         }
 
         @Override
-        public Result<ResponseRow> findFirst() {
-            return Result.of(responseRowList.getFirst());
+        public ResponseRow findFirst() {
+            return responseRowList.getFirst();
         }
 
         @Override
-        public Result<ResponseRow> findLast() {
-            return Result.of(responseRowList.getLast());
+        public ResponseRow findLast() {
+            return responseRowList.getLast();
         }
 
         @Override
-        public Result<ResponseRow> find(int index) {
-            return Result.of(responseRowList.get(index - 1));
+        public ResponseRow find(int index) {
+            return responseRowList.get(index - 1);
         }
 
         @Override
@@ -251,13 +260,19 @@ public class ResponseProvider {
         }
 
         @Override
-        public void forEach(Consumer<ResponseRow> consumer) {
+        public void forEach(Consumer<? super ResponseRow> consumer) {
             responseRowList.forEach(consumer);
         }
 
         @Override
         public String toString() {
             return dump(responseRowList);
+        }
+
+        @NotNull
+        @Override
+        public Iterator<ResponseRow> iterator() {
+            return responseRowList.iterator();
         }
     }
 

@@ -21,7 +21,7 @@ public class PlayersContainerNativeManipulationsTest {
         connection.call("create table PLAYERS (id int not null unique auto_increment, name varchar(32) not null unique)");
 
         connection.call("insert into PLAYERS (NAME) values ('lyx')")
-                .map(response -> response.find(1).orElse(null))
+                .map(response -> response.find(1))
                 .whenCompleted(System.out::println);
 
         connection.call("select * from PLAYERS")

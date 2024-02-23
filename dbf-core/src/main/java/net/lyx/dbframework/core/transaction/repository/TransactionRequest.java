@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import net.lyx.dbframework.core.compose.template.completed.CompletedQuery;
-import net.lyx.dbframework.core.transaction.TransactionIsolation;
+import net.lyx.dbframework.core.TransactionIsolation;
 
 @Getter
 @Builder

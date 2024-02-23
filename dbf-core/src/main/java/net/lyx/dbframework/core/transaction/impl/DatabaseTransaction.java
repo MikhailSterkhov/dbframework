@@ -1,6 +1,7 @@
 package net.lyx.dbframework.core.transaction.impl;
 
 import net.lyx.dbframework.core.DatabaseConnection;
+import net.lyx.dbframework.core.TransactionIsolation;
 import net.lyx.dbframework.core.transaction.*;
 import org.jetbrains.annotations.NotNull;
 

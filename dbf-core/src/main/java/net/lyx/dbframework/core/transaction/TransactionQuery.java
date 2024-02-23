@@ -1,6 +1,6 @@
 package net.lyx.dbframework.core.transaction;
 
-import net.lyx.dbframework.core.Combinable;
+import net.lyx.dbframework.core.TransactionIsolation;
 import net.lyx.dbframework.core.compose.template.completed.CompletedQuery;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,0 +1,13 @@
+package net.lyx.dbframework.dao.entity;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface EntityAccessible {
+
+    String name();
+}

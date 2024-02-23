@@ -1,21 +1,24 @@
 package net.lyx.dbframework.core;
 
-import net.lyx.dbframework.core.util.result.Result;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface ResponseStream {
+public interface ResponseStream extends Iterable<ResponseRow> {
 
     <R> Stream<R> map(Function<ResponseRow, R> function);
 
-    Result<ResponseRow> findFirst();
+    @Nullable
+    ResponseRow findFirst();
 
-    Result<ResponseRow> findLast();
+    @Nullable
+    ResponseRow findLast();
 
-    Result<ResponseRow> find(int index);
+    @Nullable
+    ResponseRow find(int index);
 
     ResponseStream limit(long limit);
 
@@ -29,5 +32,5 @@ public interface ResponseStream {
 
     long count();
 
-    void forEach(Consumer<ResponseRow> consumer);
+    void forEach(Consumer<? super ResponseRow> consumer);
 }

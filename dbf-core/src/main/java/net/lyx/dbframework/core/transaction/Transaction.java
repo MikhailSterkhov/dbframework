@@ -1,6 +1,7 @@
 package net.lyx.dbframework.core.transaction;
 
 import net.lyx.dbframework.core.Combinable;
+import net.lyx.dbframework.core.TransactionIsolation;
 import org.jetbrains.annotations.NotNull;
 
 public interface Transaction extends Combinable<PreparedTransaction> {

@@ -46,7 +46,7 @@ public enum ParameterType {
             }
         }
 
-        throw new IllegalArgumentException("Parameter type is not accessed for " + cls);
+        return null;
     }
 
     private final String toSqlString;

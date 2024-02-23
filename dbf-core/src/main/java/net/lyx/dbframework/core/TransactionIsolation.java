@@ -1,4 +1,4 @@
-package net.lyx.dbframework.core.transaction;
+package net.lyx.dbframework.core;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

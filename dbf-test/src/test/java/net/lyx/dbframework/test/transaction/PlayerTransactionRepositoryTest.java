@@ -7,7 +7,7 @@ import net.lyx.dbframework.core.compose.*;
 import net.lyx.dbframework.core.security.BasicCredentials;
 import net.lyx.dbframework.core.transaction.FailedTransactionPreprocessConsumer;
 import net.lyx.dbframework.core.transaction.PreparedTransaction;
-import net.lyx.dbframework.core.transaction.TransactionIsolation;
+import net.lyx.dbframework.core.TransactionIsolation;
 import net.lyx.dbframework.core.transaction.repository.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -95,7 +95,7 @@ public class PlayerTransactionRepositoryTest implements TransactionRepository {
 
         var responseHandler = TransactionResponseHandler.builder()
                 .ifNoPresent(() -> System.out.println("no response data"))
-                .ifPresent(responseStream -> System.out.println(responseStream.findFirst().get().field("id").getAsInt()))
+                .ifPresent(responseStream -> System.out.println(responseStream.findFirst().field("id").getAsInt()))
                 .build();
 
         var query = composer.useInsertionPattern()

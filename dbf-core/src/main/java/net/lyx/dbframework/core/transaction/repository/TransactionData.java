@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import net.lyx.dbframework.core.transaction.FailedTransactionPreprocessConsumer;
-import net.lyx.dbframework.core.transaction.TransactionIsolation;
+import net.lyx.dbframework.core.TransactionIsolation;
 
 import java.util.function.Supplier;
 
